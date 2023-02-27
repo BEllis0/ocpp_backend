@@ -1,0 +1,111 @@
+# serverless.yml
+
+service: name-your-project
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-plugin-typescript
+  - serverless-offline
+
+custom:
+  deviceTable: 'device-table'
+  credentialsTable: 'credentials-table'
+  dynamodb:
+    start:
+      # port: 8000
+      inMemory: true
+      migrate: true
+      dbPath: "./.dynamodb"
+    stages:
+      - test
+      - dev
+  serverless-offline:
+    noPrependStageInUrl: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-west-2
+  iam:
+    role:
+      statements: # permissions for all of your functions can be set here
+      - Effect: Allow
+        Action: # Gives permission to DynamoDB tables in a specific region
+        - cloudwatch:PutMetricData
+        - dynamodb:*
+        - s3:*
+        Resource: '*'
+  environment:
+    DEVICE_TABLE: ${self:custom.deviceTable}
+    CREDENTIALS_TABLE: ${self:custom.credentialsTable}
+
+functions:
+  get-devices:
+    handler: handler.handler
+    description: Get all devices, get all devices by type
+    events:
+      - http: GET /device
+      - http: GET {proxy+}
+  get-device-by-id:
+    handler: handler.handler
+    events:
+      - http: GET /device/{id}
+  create-device:
+    handler: handler.handler
+    events:
+      - http: POST /device
+  refresh-devices:
+    handler: handler.handler
+    events:
+      - http: ANY /refresh
+  create-credentials:
+    handler: handler.handler
+    events:
+      - http: POST /refresh
+
+resources:
+  Description: Write a description for your project!
+  Resources:
+    DeviceDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+          - AttributeName: tenantId
+            AttributeType: S
+          - AttributeName: type
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: TenantIndex
+            KeySchema:
+              - AttributeName: tenantId
+                KeyType: HASH
+              - AttributeName: type
+                KeyType: RANGE
+            Projection:
+              ProjectionType: 'ALL'
+            ProvisionedThroughput:
+              ReadCapacityUnits: 10
+              WriteCapacityUnits: 10
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        TableName: ${self:custom.deviceTable}
+    CredentialsDynamoDBTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: tenantId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: tenantId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
+        TableName: ${self:custom.credentialsTable}

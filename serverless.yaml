@@ -1,0 +1,31 @@
+# serverless.yml
+
+service: ocpp_backend
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-plugin-typescript
+  - serverless-prune-plugin
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    # httpPort: 3000
+    # websocketPort: 3001
+    # lambdaPort: 3002
+    noPrependStageInUrl: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-west-2
+
+functions:
+  app:
+    handler: handler.handler
+    events:
+      - http:
+          path: /
+          method: GET
+          cors: true
