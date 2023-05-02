@@ -1,5 +1,5 @@
 export const handler = async (event, context) => {
-  const connectionId = event.requestContext.connectionId;
+  const { connectionId } = event.requestContext;
 
   if (event.requestContext.eventType === 'CONNECT') {
     console.log(`WebSocket connected with connection ID ${connectionId}`);
@@ -8,11 +8,11 @@ export const handler = async (event, context) => {
     console.log(`WebSocket disconnected with connection ID ${connectionId}`);
     // Handle $disconnect event
   }
-    return {
-      statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ message: 'Connection established.'}),
-    };
+  return {
+    statusCode: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ message: 'Connection established.' }),
+  };
 };

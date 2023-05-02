@@ -1,0 +1,6 @@
+.serverless
+.webpack
+node_modules
+.eslintrc.js
+jest.config.ts
+.github/
