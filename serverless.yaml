@@ -17,31 +17,25 @@ provider:
   stage: dev
   region: us-west-2
   websocketsApiName: ocpp-websocket
-  # websocketsApiRouteSelectionExpression: $request.body.route
   websocketsDescription: OCPP-J Websocket Server
   logs:
     websocket: true
 
 functions:
   connectionHandler:
-    handler: connection.handler
+    handler: src/handlers/connection.handler
     events:
       - websocket:
           route: $connect
           # authorizer: auth
       - websocket:
           route: $disconnect
-      - websocket:
-          route: ${request.body.action}
   auth:
-    handler: auth.handler
+    handler: src/handlers/auth.handler
   messageHandler:
-    handler: message.handler
+    handler: src/handlers/message.handler
     events:
       - websocket:
-          route: ${request.body.action}
-  defaultHandler:
-    handler: default.handler
-    events:
-      - websocket: $default
+          route: $default
+        # routeResponseSelectionExpression: "request.body.action"
   
