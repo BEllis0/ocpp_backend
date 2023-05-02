@@ -1,6 +1,4 @@
-# serverless.yml
-
-service: ocpp_backend
+service: ocpp-backend
 
 plugins:
   - serverless-dynamodb-local
@@ -10,9 +8,7 @@ plugins:
 
 custom:
   serverless-offline:
-    # httpPort: 3000
-    # websocketPort: 3001
-    # lambdaPort: 3002
+    websocketPort: 3001
     noPrependStageInUrl: true
 
 provider:
@@ -20,12 +16,32 @@ provider:
   runtime: nodejs14.x
   stage: dev
   region: us-west-2
+  websocketsApiName: ocpp-websocket
+  # websocketsApiRouteSelectionExpression: $request.body.route
+  websocketsDescription: OCPP-J Websocket Server
+  logs:
+    websocket: true
 
 functions:
-  app:
-    handler: handler.handler
+  connectionHandler:
+    handler: connection.handler
     events:
-      - http:
-          path: /
-          method: GET
-          cors: true
+      - websocket:
+          route: $connect
+          # authorizer: auth
+      - websocket:
+          route: $disconnect
+      - websocket:
+          route: ${request.body.action}
+  auth:
+    handler: auth.handler
+  messageHandler:
+    handler: message.handler
+    events:
+      - websocket:
+          route: ${request.body.action}
+  defaultHandler:
+    handler: default.handler
+    events:
+      - websocket: $default
+  
