@@ -3,13 +3,22 @@
     "preserveConstEnums": true,
     "strictNullChecks": true,
     "sourceMap": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
     "allowJs": true,
+    "checkJs": true,
     "target": "esnext",
     "outDir": "dist",
     "module": "commonjs",
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "rootDir": "./"
+    "noEmit": true,
+    "lib": ["ESNext"],
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "rootDir": "./",
+    "strict": true,
+    "types": ["@types/node", "@types/jest", "jest"]
   },
   "include": ["src"],
   "exclude": [

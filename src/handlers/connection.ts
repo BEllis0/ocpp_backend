@@ -2,7 +2,7 @@ import { dynamodb } from '../lib';
 
 const table = process.env.CONNECTION_TABLE;
 
-export const handler = async (event, context) => {
+export const handler = async (event:any) => {
   const { connectionId } = event.requestContext;
 
   const response = {
@@ -14,7 +14,7 @@ export const handler = async (event, context) => {
   };
 
   try {
-    await dynamodb.addConnection(table, { connectionId });
+    await dynamodb.addConnection(table as string, { connectionId });
     console.log(`WebSocket connected with connection ID ${connectionId}`);
   } catch (e) {
     console.error('Error connecting:: ', e);

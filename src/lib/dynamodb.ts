@@ -2,7 +2,7 @@ const AWS = require('aws-sdk');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
-const addConnection = async (tableName, payload) => {
+const addConnection = async (tableName:string, payload: Record<string, unknown>) => {
   const params = {
     TableName: tableName,
     Item: {
@@ -18,7 +18,7 @@ const addConnection = async (tableName, payload) => {
   }
 };
 
-const deleteConnection = async (tableName, connectionId) => {
+const deleteConnection = async (tableName:string, connectionId:string) => {
   const params = {
     TableName: tableName,
     Key: {
@@ -33,14 +33,14 @@ const deleteConnection = async (tableName, connectionId) => {
   }
 };
 
-const getConnections = async (tableName) => {
+const getConnections = async (tableName:string) => {
   const params = {
     TableName: tableName,
     ProjectionExpression: 'connectionId',
   };
   try {
     const result = await dynamoDb.scan(params).promise();
-    return result.Items.map((item) => item.connectionId);
+    return result.Items.map((item:{connectionId:string}) => item.connectionId);
   } catch (e) {
     console.error('Error in deleteConnection:: ', e);
     throw e;
