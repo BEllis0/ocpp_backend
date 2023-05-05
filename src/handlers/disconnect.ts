@@ -3,23 +3,23 @@ import { dynamodb } from '../lib';
 export const handler = async (event, context) => {
   const { connectionId } = event.requestContext;
   try {
-    await dynamodb.addConnection(connectionId);
-    console.log(`WebSocket connected with connection ID ${connectionId}`);
+    console.log(`WebSocket disconnected with connection ID ${connectionId}`);
+    await dynamodb.deleteConnection(connectionId);
     return {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: 'Connection established.' }),
+      body: JSON.stringify({ message: `WebSocket disconnected with connection ID ${connectionId}` }),
     };
   } catch (e) {
-    console.error('Error connecting:: ', e);
+    console.error('Error in disconnect handler:: ', e);
     return {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ error: 'Error connecting to websocket.' }),
+      body: JSON.stringify({ error: 'Error disconnecting to websocket.' }),
     };
   }
 };

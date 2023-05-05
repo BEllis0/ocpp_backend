@@ -1,4 +1,4 @@
-import { aws } from '../lib';
+import { gateway } from '../lib';
 
 const sendResponse = async (client, connectionId, action, payload) => {
   const body = {
@@ -13,7 +13,7 @@ const sendResponse = async (client, connectionId, action, payload) => {
 };
 
 export const handler = async (event, context) => {
-  const client = aws.apiGatewayClient(`${event.requestContext.domainName}/${event.requestContext.stage}`);
+  const client = gateway.apiGatewayClient(`${event.requestContext.domainName}/${event.requestContext.stage}`);
   const { connectionId } = event.requestContext;
   try {
     const { action, payload } = JSON.parse(event.body);

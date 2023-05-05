@@ -1,5 +1,7 @@
-import * as aws from './aws';
+import * as gateway from './apigateway';
+import * as dynamodb from './dynamodb';
 
 export {
-  aws,
+  gateway,
+  dynamodb,
 };

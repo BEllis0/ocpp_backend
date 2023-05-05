@@ -7,8 +7,19 @@ plugins:
   - serverless-offline
 
 custom:
+  connectionTable: 'connectionTable'
+  # dynamodb:
+  #   start:
+  #     inMemory: true
+  #     migrate: true
+  #     dbPath: "./.dynamodb"
+  #   installPath: ./.dynamodb
+  #   stages:
+  #     - dev
   serverless-offline:
     websocketPort: 3001
+    httpPort: 3002
+    # lambdaPort: 3008
     noPrependStageInUrl: true
 
 provider:
@@ -18,6 +29,9 @@ provider:
   region: us-west-2
   websocketsApiName: ocpp-websocket
   websocketsDescription: OCPP-J Websocket Server
+  # timeout: 30
+  environment:
+    CONNECTION_TABLE: ${self:custom.connectionTable}
   logs:
     websocket: true
 
@@ -28,14 +42,30 @@ functions:
       - websocket:
           route: $connect
           # authorizer: auth
-      - websocket:
-          route: $disconnect
-  auth:
-    handler: src/handlers/auth.handler
   messageHandler:
     handler: src/handlers/message.handler
     events:
       - websocket:
           route: $default
         # routeResponseSelectionExpression: "request.body.action"
+  disconnectionHandler:
+    handler: src/handlers/disconnect.handler
+    events:
+      - websocket:
+        route: $disconnect
   
+resources:
+  Resources:
+    ConnectionsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: connections
+        AttributeDefinitions:
+          - AttributeName: connectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: connectionId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 10
+          WriteCapacityUnits: 10
