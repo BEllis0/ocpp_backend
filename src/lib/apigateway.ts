@@ -9,6 +9,19 @@ const apiGatewayClient = (endpoint: string) => {
   return client;
 };
 
+const sendResponse = async (client, connectionId, action, payload) => {
+  const body = {
+    action,
+    payload,
+  };
+
+  await client.postToConnection({
+    ConnectionId: connectionId,
+    Data: JSON.stringify(body),
+  }).promise();
+};
+
 export {
   apiGatewayClient,
+  sendResponse,
 };

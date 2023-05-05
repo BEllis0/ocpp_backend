@@ -1,27 +1,26 @@
 const AWS = require('aws-sdk');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = process.env.CONNECTION_TABLE;
 
-const addConnection = async (connectionId:string, metadata?:any) => {
+const addConnection = async (tableName, payload) => {
   const params = {
-    TableName: TABLE_NAME,
+    TableName: tableName,
     Item: {
-      connectionId,
-      metadata,
+      ...payload,
     },
   };
   try {
     await dynamoDb.put(params).promise();
+    return params.Item;
   } catch (e) {
     console.error('Error in addConnection:: ', e);
     throw e;
   }
 };
 
-const deleteConnection = async (connectionId) => {
+const deleteConnection = async (tableName, connectionId) => {
   const params = {
-    TableName: TABLE_NAME,
+    TableName: tableName,
     Key: {
       connectionId,
     },
@@ -34,9 +33,9 @@ const deleteConnection = async (connectionId) => {
   }
 };
 
-const getConnections = async () => {
+const getConnections = async (tableName) => {
   const params = {
-    TableName: TABLE_NAME,
+    TableName: tableName,
     ProjectionExpression: 'connectionId',
   };
   try {
