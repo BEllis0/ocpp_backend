@@ -1,5 +1,5 @@
-resource :DynamoDatabase, 'AWS::DynamoDB::Table' do
-  table_name Fn::sub('${app}_${branch}')
+resource :DynamoDatabase, 'AWS::DynamoDB::Table', DeletionPolicy: :Delete, UpdateReplacePolicy: :Retain do
+  table_name Fn::sub('${connections}_${branch}')
   attribute_definitions [
     { AttributeName: :connectionId,                   AttributeType: :S }
   ]
