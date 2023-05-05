@@ -1,3 +1,5 @@
+import ApiGatewayManagementApi from 'aws-sdk/clients/apigatewaymanagementapi';
+
 const AWS = require('aws-sdk');
 
 const apiGatewayClient = (endpoint: string) => {
@@ -9,16 +11,26 @@ const apiGatewayClient = (endpoint: string) => {
   return client;
 };
 
-const sendResponse = async (client, connectionId, action, payload) => {
+const sendResponse = async (
+  client: ApiGatewayManagementApi,
+  connectionId:string,
+  action:string,
+  payload: Record<string, unknown>,
+) => {
   const body = {
     action,
     payload,
   };
 
-  await client.postToConnection({
-    ConnectionId: connectionId,
-    Data: JSON.stringify(body),
-  }).promise();
+  try {
+    await client.postToConnection({
+      ConnectionId: connectionId,
+      Data: JSON.stringify(body),
+    }).promise();
+  } catch (e) {
+    console.error('Error in sendResponse:: ', e);
+    throw e;
+  }
 };
 
 export {

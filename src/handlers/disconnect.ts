@@ -2,7 +2,7 @@ import { dynamodb } from '../lib';
 
 const table = process.env.CONNECTION_TABLE;
 
-export const handler = async (event, context) => {
+export const handler = async (event:any) => {
   const { connectionId } = event.requestContext;
   const response = {
     statusCode: 200,
@@ -14,7 +14,7 @@ export const handler = async (event, context) => {
 
   try {
     console.log(`WebSocket disconnected with connection ID ${connectionId}`);
-    await dynamodb.deleteConnection(table, connectionId);
+    await dynamodb.deleteConnection(table as string, connectionId);
   } catch (e) {
     console.error('Error in disconnect handler:: ', e);
     response.statusCode = 500;
