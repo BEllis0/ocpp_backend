@@ -37,3 +37,5 @@ resource :S3BucketPolicy, 'AWS::S3::BucketPolicy', DependsOn: :S3Bucket do
     }
   )
 end
+
+output :S3Bucket, Fn.ref(:S3Bucket), export: Fn.sub('${AWS::StackName}-S3Bucket')

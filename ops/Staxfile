@@ -1,4 +1,6 @@
 require_relative 'lib/stack'
+require_relative 'lib/stax/mixin/sam'
 
 stack :build
 stack :db
+stack :api, import: :db

@@ -1,4 +1,4 @@
-description 'occp (soon-to-be) codepipeline'
+description 'ocpp (soon-to-be) codepipeline'
 
 
 include_template(

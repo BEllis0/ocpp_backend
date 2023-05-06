@@ -1,5 +1,5 @@
 resource :DynamoDatabase, 'AWS::DynamoDB::Table', DeletionPolicy: :Delete, UpdateReplacePolicy: :Retain do
-  table_name Fn::sub('${connections}_${branch}')
+  table_name Fn::sub('connections_${branch}')
   attribute_definitions [
     { AttributeName: :connectionId,                   AttributeType: :S }
   ]
@@ -16,3 +16,5 @@ resource :DynamoDatabase, 'AWS::DynamoDB::Table', DeletionPolicy: :Delete, Updat
   # )
   tag :Stack, Fn::ref('AWS::StackName')
 end
+
+output :DynamoTable,      Fn.ref(:DynamoDatabase),                            export: Fn::sub('${AWS::StackName}-DynamoTable')
