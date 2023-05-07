@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: ocpp lambdas and websockets
+Transform: 'AWS::Serverless-2016-10-31'
+
+Parameters:
+  db:
+    Type: String
+
+Globals:
+  Function:
+    CodeUri: handlers/
+    Runtime: nodejs14.x
+    MemorySize: 1024
+    Timeout: 6
+    Environment:
+      Variables:
+        CONNECTION_TABLE:
+          Fn::ImportValue:
+            !Sub "${db}-DynamoTable"
+
+Resources:
+  ConnectionHandlerLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: connection.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Fn::ImportValue:
+              !Sub "${db}-DynamoTable"
+  MessageHandlerLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: message.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Fn::ImportValue:
+              !Sub "${db}-DynamoTable"
+  DisconnectionHandlerLambdaFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: disconnect.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Fn::ImportValue:
+              !Sub "${db}-DynamoTable"
+  ConnectionHandlerLambdaPermissionWebsockets:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - WebsocketsApi
+      # - ConnectionHandlerLambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref ConnectionHandlerLambdaFunction
+      Principal: apigateway.amazonaws.com
+
+  MessageHandlerLambdaPermissionWebsockets:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - WebsocketsApi
+      # - MessageHandlerLambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref MessageHandlerLambdaFunction
+      Principal: apigateway.amazonaws.com
+
+  DisconnectionHandlerLambdaPermissionWebsockets:
+    Type: 'AWS::Lambda::Permission'
+    DependsOn:
+      - WebsocketsApi
+      # - DisconnectionHandlerLambdaFunction
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref DisconnectionHandlerLambdaFunction
+      Principal: apigateway.amazonaws.com
+
+
+
+  WebsocketsApi:
+    Type: 'AWS::ApiGatewayV2::Api'
+    Properties:
+      Name: ocpp-websocket
+      RouteSelectionExpression: $request.body.action
+      Description: OCPP-J Websocket Server
+      ProtocolType: WEBSOCKET
+
+
+  SconnectWebsocketsRoute:
+    Type: 'AWS::ApiGatewayV2::Route'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      RouteKey: $connect
+      AuthorizationType: NONE
+      # TODO: For deployment
+      # OperationName: DisconnectRoute
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref ConnectionHandlerWebsocketsIntegration
+  ConnectionHandlerWebsocketsIntegration:
+    Type: 'AWS::ApiGatewayV2::Integration'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub >-
+        arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ConnectionHandlerLambdaFunction.Arn}/invocations
+
+
+  SdefaultWebsocketsRoute:
+    Type: 'AWS::ApiGatewayV2::Route'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      RouteKey: $default
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref MessageHandlerWebsocketsIntegration
+  MessageHandlerWebsocketsIntegration:
+    Type: 'AWS::ApiGatewayV2::Integration'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub >-
+        arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MessageHandlerLambdaFunction.Arn}/invocations
+
+
+  SdisconnectWebsocketsRoute:
+    Type: 'AWS::ApiGatewayV2::Route'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      RouteKey: $disconnect
+      AuthorizationType: NONE
+      Target: !Join
+        - /
+        - - integrations
+          - !Ref DisconnectionHandlerWebsocketsIntegration
+  DisconnectionHandlerWebsocketsIntegration:
+    Type: 'AWS::ApiGatewayV2::Integration'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Sub >-
+        arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DisconnectionHandlerLambdaFunction.Arn}/invocations
+
+
+  WebsocketsDeployment:
+    Type: 'AWS::ApiGatewayV2::Deployment'
+    DependsOn:
+      - SconnectWebsocketsRoute
+      - SdefaultWebsocketsRoute
+      - SdisconnectWebsocketsRoute
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      Description: OCPP-J Websocket Server
+  WebsocketsDeploymentStage:
+    Type: 'AWS::ApiGatewayV2::Stage'
+    Properties:
+      ApiId: !Ref WebsocketsApi
+      # TODO: branch name?
+      StageName: dev
+      Description: OCPP-J Websocket Server
+      DeploymentId: !Ref WebsocketsDeployment
