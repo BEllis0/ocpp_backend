@@ -14,7 +14,7 @@ module Stax
     end
 
     def sam_build
-      system('sam build --use-container')
+      system('sam build')
     end
 
     ## sam package pollutes stdout with s3uploader progress bar
