@@ -1,4 +1,4 @@
-resource :S3Bucket, 'AWS::S3::Bucket', DeletionPolicy: :Delete, UpdateReplacePolicy: :Retain do
+resource :S3Bucket, 'AWS::S3::Bucket', DeletionPolicy: :Retain, UpdateReplacePolicy: :Retain do
   bucket_encryption(
     ServerSideEncryptionConfiguration: [
       {
