@@ -2,7 +2,6 @@
   "name": "ocpp_backend",
   "version": "1.0.0",
   "description": "OCPP Backend",
-  "main": "index.ts",
   "author": "Brandon Ellis",
   "license": "MIT",
   "devDependencies": {
@@ -27,6 +26,7 @@
     "aws-sdk": "^2.1369.0",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "esbuild": "^0.17.18",
     "express": "^4.18.1",
     "helmet": "^5.1.0",
     "serverless": "^3.30.1",

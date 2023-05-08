@@ -8,7 +8,7 @@ Parameters:
 
 Globals:
   Function:
-    CodeUri: handlers/
+    CodeUri: ./
     Runtime: nodejs14.x
     MemorySize: 1024
     Timeout: 6
@@ -22,30 +22,36 @@ Resources:
   ConnectionHandlerLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: connection.handler
+      Handler: handlers/connection.handler
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
             Fn::ImportValue:
               !Sub "${db}-DynamoTable"
+    Metadata:
+      BuildMethod: esbuild
   MessageHandlerLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: message.handler
+      Handler: handlers/message.handler
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
             Fn::ImportValue:
               !Sub "${db}-DynamoTable"
+    Metadata:
+      BuildMethod: esbuild
   DisconnectionHandlerLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: disconnect.handler
+      Handler: handlers/disconnect.handler
       Policies:
       - DynamoDBCrudPolicy:
           TableName:
             Fn::ImportValue:
               !Sub "${db}-DynamoTable"
+    Metadata:
+      BuildMethod: esbuild
   ConnectionHandlerLambdaPermissionWebsockets:
     Type: 'AWS::Lambda::Permission'
     DependsOn:
