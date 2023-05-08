@@ -28,6 +28,8 @@ Resources:
           TableName:
             Fn::ImportValue:
               !Sub "${db}-DynamoTable"
+    Metadata:
+      BuildMethod: esbuild
   MessageHandlerLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -37,6 +39,8 @@ Resources:
           TableName:
             Fn::ImportValue:
               !Sub "${db}-DynamoTable"
+    Metadata:
+      BuildMethod: esbuild
   DisconnectionHandlerLambdaFunction:
     Type: AWS::Serverless::Function
     Properties:
