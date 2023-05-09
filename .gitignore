@@ -2,7 +2,8 @@ node_modules
 /.pnp
 .pnp.js
 
-/ops/aw
+# ops
+/ops/aws
 
 # testing
 /coverage
