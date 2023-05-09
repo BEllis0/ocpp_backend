@@ -15,7 +15,7 @@ export const handler = async (event:any) => {
         break;
       case 'StatusNotification':
         await gateway.sendResponse(client, connectionId, 'StatusNotificationResponse', {
-          status: 'Accepted',
+          status: 'Acce```pted',
         });
         break;
       default:
