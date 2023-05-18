@@ -36,6 +36,5 @@ export type MeterValue = {
       timestamp: string; // Date-time in ISO 8601 format
     }>;
     transactionId?: number;
-    // Add other properties related to meter values if available
   }>;
 };
