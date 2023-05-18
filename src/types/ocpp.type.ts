@@ -1,82 +1,82 @@
 export type Measurand =
-  | "Energy.Active.Export.Register"
-  | "Energy.Active.Import.Register"
-  | "Energy.Reactive.Export.Register"
-  | "Energy.Reactive.Import.Register"
-  | "Energy.Active.Export.Interval"
-  | "Energy.Active.Import.Interval"
-  | "Energy.Reactive.Export.Interval"
-  | "Energy.Reactive.Import.Interval"
-  | "Power.Active.Export"
-  | "Power.Active.Import"
-  | "Power.Offered"
-  | "Power.Reactive.Export"
-  | "Power.Reactive.Import"
-  | "Power.Factor"
-  | "Current.Import"
-  | "Current.Export"
-  | "Current.Offered"
-  | "Voltage"
-  | "Frequency"
-  | "Temperature"
-  | "SoC"
-  | "RPM";
+  | 'Energy.Active.Export.Register'
+  | 'Energy.Active.Import.Register'
+  | 'Energy.Reactive.Export.Register'
+  | 'Energy.Reactive.Import.Register'
+  | 'Energy.Active.Export.Interval'
+  | 'Energy.Active.Import.Interval'
+  | 'Energy.Reactive.Export.Interval'
+  | 'Energy.Reactive.Import.Interval'
+  | 'Power.Active.Export'
+  | 'Power.Active.Import'
+  | 'Power.Offered'
+  | 'Power.Reactive.Export'
+  | 'Power.Reactive.Import'
+  | 'Power.Factor'
+  | 'Current.Import'
+  | 'Current.Export'
+  | 'Current.Offered'
+  | 'Voltage'
+  | 'Frequency'
+  | 'Temperature'
+  | 'SoC'
+  | 'RPM';
 
 export type Phase =
-  | "L1"
-  | "L2"
-  | "L3"
-  | "N"
-  | "L1-N"
-  | "L2-N"
-  | "L3-N"
-  | "L1-L2"
-  | "L2-L3"
-  | "L3-L1";
+  | 'L1'
+  | 'L2'
+  | 'L3'
+  | 'N'
+  | 'L1-N'
+  | 'L2-N'
+  | 'L3-N'
+  | 'L1-L2'
+  | 'L2-L3'
+  | 'L3-L1';
 
-export type Location = "Cable" | "EV" | "Inlet" | "Outlet" | "Body";
+export type Location = 'Cable' | 'EV' | 'Inlet' | 'Outlet' | 'Body';
 
 export type Unit =
-  | "Wh"
-  | "kWh"
-  | "varh"
-  | "kvarh"
-  | "W"
-  | "kW"
-  | "VA"
-  | "kVA"
-  | "var"
-  | "kvar"
-  | "A"
-  | "V"
-  | "K"
-  | "Celcius"
-  | "Fahrenheit"
-  | "Percent";
+  | 'Wh'
+  | 'kWh'
+  | 'varh'
+  | 'kvarh'
+  | 'W'
+  | 'kW'
+  | 'VA'
+  | 'kVA'
+  | 'var'
+  | 'kvar'
+  | 'A'
+  | 'V'
+  | 'K'
+  | 'Celcius'
+  | 'Fahrenheit'
+  | 'Percent';
 
-export enum Status {
-  Accepted = "Accepted",
-  Blocked = "Blocked",
-  Expired = "Expired",
-  Invalid = "Invalid",
-  ConcurrentTx = "ConcurrentTx",
-  Unlocked = "Unlocked",
-  UnlockFailed = "UnlockFailed",
-  NotImplemented = "NotImplemented",
-  NotSupported = "NotSupported",
-};
+export type Status =
+  | 'Accepted'
+  | 'Blocked'
+  | 'Expired'
+  | 'Invalid'
+  | 'ConcurrentTx'
+  | 'Unlocked'
+  | 'UnlockFailed'
+  | 'NotImplemented'
+  | 'NotSupported';
 
-export enum StatusEVSE {
-  Available = "Available",
-  Preparing = "Preparing",
-  Charging = "Charging",
-  SuspendedEVSE = "SuspendedEVSE",
-  SuspendedEV = "SuspendedEV",
-  Finishing = "Finishing",
-  Reserved = "Reserved",
-  Unavailable = "Unavailable",
-  Faulted = "Faulted",
-};
+export type ChargePointStatus =
+  | 'Available'
+  | 'Preparing'
+  | 'Charging'
+  | 'SuspendedEVSE'
+  | 'SuspendedEV'
+  | 'Finishing'
+  | 'Reserved'
+  | 'Unavailable'
+  | 'Faulted';
+
+export type BaselineStatus = 'Accepted' | 'Rejected';
 
 export type AuthorizeRequest = {
   idTag: string;
@@ -103,7 +103,7 @@ export type BootNotificationRequest = {
 };
 
 export type BootNotificationResponse = {
-  status: 'Accepted' | 'Pending' | 'Rejected';
+  status: BaselineStatus | 'Pending';
   currentTime: string;
   interval: number;
 };
@@ -113,7 +113,7 @@ export type CancelReservationRequest = {
 };
 
 export type CancelReservationResponse = {
-  status: 'Accepted' | 'Rejected';
+  status: BaselineStatus;
 };
 
 export type ChangeAvailabilityRequest = {
@@ -122,7 +122,7 @@ export type ChangeAvailabilityRequest = {
 };
 
 export type ChangeAvailabilityResponse = {
-  status: 'Accepted' | 'Rejected' | 'Scheduled';
+  status: BaselineStatus | 'Scheduled';
 };
 
 export type ChangeConfigurationRequest = {
@@ -131,13 +131,13 @@ export type ChangeConfigurationRequest = {
 };
 
 export type ChangeConfigurationResponse = {
-  status: 'Accepted' | 'Rejected' | 'RebootRequired' | 'NotSupported';
+  status: BaselineStatus | 'RebootRequired' | 'NotSupported';
 };
 
 export type ClearCacheRequest = {};
 
 export type ClearCacheResponse = {
-  status: 'Accepted' | 'Rejected';
+  status: BaselineStatus;
 };
 
 export type ClearChargingProfileRequest = {
@@ -158,7 +158,7 @@ export type DataTransferRequest = {
 };
 
 export type DataTransferResponse = {
-  status: 'Accepted' | 'Rejected' | 'UnknownMessageId' | 'UnknownVendorId';
+  status: BaselineStatus | 'UnknownMessageId' | 'UnknownVendorId';
   data?: string;
 };
 
@@ -169,13 +169,13 @@ export type DiagnosticsStatusNotificationRequest = {
 export type DiagnosticsStatusNotificationResponse = {};
 
 export type FirmwareStatusNotificationRequest = {
-  status: 
-  'Downloaded' 
-  | 'DownloadFailed' 
-  | 'Downloading' 
-  | 'Idle' 
-  | 'InstallationFailed' 
-  | 'Installing' 
+  status:
+  'Downloaded'
+  | 'DownloadFailed'
+  | 'Downloading'
+  | 'Idle'
+  | 'InstallationFailed'
+  | 'Installing'
   | 'Installed';
 };
 
@@ -188,7 +188,7 @@ export type GetCompositeScheduleRequest = {
 };
 
 export type GetCompositeScheduleResponse = {
-  status: 'Accepted' | 'Rejected';
+  status: BaselineStatus;
   connectorId: number;
   scheduleStart: string;
   chargingSchedule: {
@@ -248,16 +248,16 @@ export type MeterValuesRequest = {
     timestamp: string;
     sampledValue: {
       value: string;
-      context?: 
-      "Interruption.Begin" 
-      | "Interruption.End" 
-      | "Sample.Clock" 
-      | "Sample.Periodic" 
-      | "Transaction.Begin" 
-      | "Transaction.End" 
-      | "Trigger" 
-      | "Other";
-      format?: "Raw" | "SignedData";
+      context?:
+      'Interruption.Begin'
+      | 'Interruption.End'
+      | 'Sample.Clock'
+      | 'Sample.Periodic'
+      | 'Transaction.Begin'
+      | 'Transaction.End'
+      | 'Trigger'
+      | 'Other';
+      format?: 'Raw' | 'SignedData';
       measurand?: Measurand;
       phase?: Phase;
       location?: Location;
@@ -275,15 +275,15 @@ export type RemoteStartTransactionRequest = {
       chargingProfileId: number;
       transactionId: number;
       stackLevel: number;
-      chargingProfilePurpose: "ChargePointMaxProfile" | "TxDefaultProfile" | "TxProfile";
-      chargingProfileKind: "Absolute" | "Recurring" | "Relative";
-      recurrencyKind: "Daily" | "Weekly";
+      chargingProfilePurpose: 'ChargePointMaxProfile' | 'TxDefaultProfile' | 'TxProfile';
+      chargingProfileKind: 'Absolute' | 'Recurring' | 'Relative';
+      recurrencyKind: 'Daily' | 'Weekly';
       validFrom: string;
       validTo: string;
       chargingSchedule: {
           duration: number;
           startSchedule: string;
-          chargingRateUnit: "A" | "W";
+          chargingRateUnit: 'A' | 'W';
           chargingSchedulePeriod: {
               startPeriod: number;
               limit: number;
@@ -295,11 +295,11 @@ export type RemoteStartTransactionRequest = {
 };
 
 export type RemoteStartTransactionResponse = {
-  status: "Accepted" | "Rejected";
+  status: BaselineStatus;
 };
 
 export type RemoteStopTransactionResponse = {
-  status: "Accepted" | "Rejected";
+  status: BaselineStatus;
 };
 
 export type ReserveNowRequest = {
@@ -311,21 +311,15 @@ export type ReserveNowRequest = {
 };
 
 export type ReserveNowResponse = {
-  status: "Accepted" | "Faulted" | "Occupied" | "Rejected" | "Unavailable";
+  status: BaselineStatus | 'Faulted' | 'Occupied' | 'Unavailable';
 };
 
 export type ResetRequest = {
-  type: "Hard" | "Soft";
+  type: 'Hard' | 'Soft';
 };
 
 export type ResetResponse = {
-  status: "Accepted" | "Rejected";
-};
-
-export type SendLocalListRequest = {
-  listVersion: number;
-  localAuthorizationList: LocalAuthorizationListItem[];
-  updateType: "Differential" | "Full";
+  status: BaselineStatus;
 };
 
 export type LocalAuthorizationListItem = {
@@ -333,12 +327,18 @@ export type LocalAuthorizationListItem = {
   idTagInfo: {
       expiryDate: string;
       parentIdTag: string;
-      status: "Accepted" | "Blocked" | "Expired" | "Invalid" | "ConcurrentTx";
+      status: 'Accepted' | 'Blocked' | 'Expired' | 'Invalid' | 'ConcurrentTx';
   };
 };
 
+export type SendLocalListRequest = {
+  listVersion: number;
+  localAuthorizationList: LocalAuthorizationListItem[];
+  updateType: 'Differential' | 'Full';
+};
+
 export type SendLocalListResponse = {
-  status: "Accepted" | "Failed" | "NotSupported" | "VersionMismatch";
+  status: 'Accepted' | 'Failed' | 'NotSupported' | 'VersionMismatch';
 };
 
 export type SetChargingProfileRequest = {
@@ -347,15 +347,15 @@ export type SetChargingProfileRequest = {
       chargingProfileId: number;
       transactionId?: number;
       stackLevel: number;
-      chargingProfilePurpose: "ChargePointMaxProfile" | "TxDefaultProfile" | "TxProfile";
-      chargingProfileKind: "Absolute" | "Recurring" | "Relative";
-      recurrencyKind?: "Daily" | "Weekly";
+      chargingProfilePurpose: 'ChargePointMaxProfile' | 'TxDefaultProfile' | 'TxProfile';
+      chargingProfileKind: 'Absolute' | 'Recurring' | 'Relative';
+      recurrencyKind?: 'Daily' | 'Weekly';
       validFrom?: string;
       validTo?: string;
       chargingSchedule: {
           duration: number;
           startSchedule: string;
-          chargingRateUnit: "A" | "W";
+          chargingRateUnit: 'A' | 'W';
           chargingSchedulePeriod: {
               startPeriod: number;
               limit: number;
@@ -378,37 +378,37 @@ export type StartTransactionResponse = {
   idTagInfo: {
       expiryDate: string;
       parentIdTag?: string;
-      status: 
-      "Accepted" 
-      | "Blocked" 
-      | "Expired" 
-      | "Invalid" 
-      | "ConcurrentTx";
+      status:
+      'Accepted'
+      | 'Blocked'
+      | 'Expired'
+      | 'Invalid'
+      | 'ConcurrentTx';
   };
   transactionId: number;
 };
 
 export type StatusNotificationRequest = {
   connectorId: number;
-  errorCode: 
-  "ConnectorLockFailure" 
-  | "EVCommunicationError" 
-  | "GroundFailure" 
-  | "HighTemperature" 
-  | "InternalError" 
-  | "LocalListConflict" 
-  | "NoError" 
-  | "OtherError" 
-  | "OverCurrentFailure" 
-  | "PowerMeterFailure" 
-  | "PowerSwitchFailure" 
-  | "ReaderFailure" 
-  | "ResetFailure" 
-  | "UnderVoltage" 
-  | "OverVoltage" 
-  | "WeakSignal";
+  errorCode:
+  'ConnectorLockFailure'
+  | 'EVCommunicationError'
+  | 'GroundFailure'
+  | 'HighTemperature'
+  | 'InternalError'
+  | 'LocalListConflict'
+  | 'NoError'
+  | 'OtherError'
+  | 'OverCurrentFailure'
+  | 'PowerMeterFailure'
+  | 'PowerSwitchFailure'
+  | 'ReaderFailure'
+  | 'ResetFailure'
+  | 'UnderVoltage'
+  | 'OverVoltage'
+  | 'WeakSignal';
   info?: string;
-  status: StatusEVSE;
+  status: ChargePointStatus;
   timestamp: string;
   vendorId?: string;
   vendorErrorCode?: string;
@@ -416,24 +416,22 @@ export type StatusNotificationRequest = {
 
 export type StatusNotificationResponse = {};
 
-export type StopTransactionRequest = {
-  idTag: string;
-  meterStop: number;
-  timestamp: string;
-  transactionId: number;
-  reason: 
-  "EmergencyStop" 
-  | "EVDisconnected" 
-  | "HardReset" 
-  | "Local" 
-  | "Other" 
-  | "PowerLoss" 
-  | "Reboot" 
-  | "Remote" 
-  | "SoftReset" 
-  | "UnlockCommand" 
-  | "DeAuthorized";
-  transactionData?: TransactionData[];
+export type SampledValue = {
+  value: string;
+  context:
+  'Interruption.Begin'
+  | 'Interruption.End'
+  | 'Sample.Clock'
+  | 'Sample.Periodic'
+  | 'Transaction.Begin'
+  | 'Transaction.End'
+  | 'Trigger'
+  | 'Other';
+  format: 'Raw' | 'SignedData';
+  measurand: Measurand;
+  phase?: Phase;
+  location?: Location;
+  unit: Unit;
 };
 
 export type TransactionData = {
@@ -441,22 +439,24 @@ export type TransactionData = {
   sampledValue: SampledValue[];
 };
 
-export type SampledValue = {
-  value: string;
-  context: 
-  "Interruption.Begin" 
-  | "Interruption.End" 
-  | "Sample.Clock" 
-  | "Sample.Periodic" 
-  | "Transaction.Begin" 
-  | "Transaction.End" 
-  | "Trigger" 
-  | "Other";
-  format: "Raw" | "SignedData";
-  measurand: Measurand;
-  phase?: Phase;
-  location?: Location;
-  unit: Unit;
+export type StopTransactionRequest = {
+  idTag: string;
+  meterStop: number;
+  timestamp: string;
+  transactionId: number;
+  reason:
+  'EmergencyStop'
+  | 'EVDisconnected'
+  | 'HardReset'
+  | 'Local'
+  | 'Other'
+  | 'PowerLoss'
+  | 'Reboot'
+  | 'Remote'
+  | 'SoftReset'
+  | 'UnlockCommand'
+  | 'DeAuthorized';
+  transactionData?: TransactionData[];
 };
 
 export interface StopTransactionResponse {
@@ -465,36 +465,36 @@ export interface StopTransactionResponse {
     parentIdTag?: string;
     status: Status;
   };
-};
+}
 
 export interface TriggerMessageRequest {
-  requestedMessage: 
-  "BootNotification" 
-  | "DiagnosticsStatusNotification" 
-  | "FirmwareStatusNotification" 
-  | "Heartbeat" 
-  | "MeterValues" 
-  | "StatusNotification";
+  requestedMessage:
+  'BootNotification'
+  | 'DiagnosticsStatusNotification'
+  | 'FirmwareStatusNotification'
+  | 'Heartbeat'
+  | 'MeterValues'
+  | 'StatusNotification';
   connectorId?: number;
-};
+}
 
 export interface TriggerMessageResponse {
-  status: "Accepted" | "Rejected" | "NotImplemented";
-};
+  status: BaselineStatus | 'NotImplemented';
+}
 
 export interface UnlockConnectorRequest {
   connectorId: number;
-};
+}
 
 export interface UnlockConnectorResponse {
-  status: "Unlocked" | "UnlockFailed" | "NotSupported";
-};
+  status: 'Unlocked' | 'UnlockFailed' | 'NotSupported';
+}
 
 export interface UpdateFirmwareRequest {
   location: string;
   retries?: number;
   retrieveDate: string;
   retryInterval?: number;
-};
+}
 
-export interface UpdateFirmwareResponse {};
+export interface UpdateFirmwareResponse {}
